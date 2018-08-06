@@ -17,17 +17,16 @@ RUN set -x \
 	&& apt-get install -yq --no-install-recommends \
 		libpostgresql-jdbc-java \
     && wget -q -O/tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/liquibase-parent-${LIQUIBASE_VERSION}/liquibase-${LIQUIBASE_VERSION}-bin.tar.gz" \
-    && useradd -ms /bin/bash liquibase \
     && mkdir -p /opt/liquibase \
     && mkdir -p /liquibase \
     && tar -xzf /tmp/liquibase.tar.gz -C /opt/liquibase \
     && rm -f /tmp/liquibase.tar.gz \
-    && chown -R liquibase:liquibase /opt/liquibase /liquibase /entrypoint.sh \
+    && chown -R 1001:1001 /opt/liquibase /liquibase /entrypoint.sh \
     && chmod +x /opt/liquibase/liquibase \
     && ln -s /opt/liquibase/liquibase /usr/local/bin/ \
     && chmod +x /entrypoint.sh \
     && touch /liquibase.properties  \
-    && chown -R liquibase:liquibase /liquibase.properties \
+    && chown -R 1001:1001 /liquibase.properties \
     && wget -q -O /opt/liquibase/lib/slf4j-api-1.7.25.jar "http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" \
 	&& apt-get clean \
 	&& rm -r /var/lib/apt/lists/* \
@@ -35,7 +34,7 @@ RUN set -x \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-USER liquibase
+USER 1001
 
 WORKDIR /liquibase
 ENTRYPOINT ["/entrypoint.sh"]
